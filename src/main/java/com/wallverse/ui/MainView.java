@@ -73,8 +73,9 @@ public class MainView {
         favoritesBtn.getStyleClass().add("ghost-button");
         likedBtn.getStyleClass().add("ghost-button");
 
-        Text welcome = new Text("Welcome, " + user.getUsername());
+        Text welcome = new Text();
         welcome.getStyleClass().add("welcome");
+        HBox authActions = new HBox(8);
         Region spacer = new Region();
         HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
 
@@ -83,7 +84,20 @@ public class MainView {
         likedBtn.setOnAction(e -> app.showLiked(user));
         searchBtn.setOnAction(e -> searchWallpapers(searchField.getText(), categories.getValue()));
 
-        topBar.getChildren().addAll(homeBtn, favoritesBtn, likedBtn, searchField, categories, searchBtn, spacer, welcome);
+        if (user.isGuest()) {
+            welcome.setText("Browsing as Guest");
+            Button loginBtn = new Button("Sign In");
+            Button signupBtn = new Button("Create Account");
+            loginBtn.getStyleClass().add("ghost-button");
+            signupBtn.getStyleClass().add("primary-button");
+            loginBtn.setOnAction(e -> app.showLogin());
+            signupBtn.setOnAction(e -> app.showSignup());
+            authActions.getChildren().addAll(loginBtn, signupBtn);
+        } else {
+            welcome.setText("Welcome, " + user.getUsername());
+        }
+
+        topBar.getChildren().addAll(homeBtn, favoritesBtn, likedBtn, searchField, categories, searchBtn, spacer, welcome, authActions);
 
         tile.setPadding(new Insets(15));
         tile.setHgap(15);
